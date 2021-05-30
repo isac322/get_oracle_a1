@@ -1,0 +1,25 @@
+
+[tool.poetry]
+name = "get_oracle_a1"
+version = "0.1.0"
+description = ""
+authors = ["Byeonghoon Yoo <bh322yoo@gmail.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+oci = "^2.38.4"
+pydantic = "^1.8.2"
+
+[tool.poetry.dev-dependencies]
+black = "^21.5b1"
+flake8 = "^3.9.2"
+python-dotenv = "^0.17.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.black]
+skip-string-normalization = true
