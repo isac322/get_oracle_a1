@@ -126,7 +126,11 @@ def _bootstrap() -> tuple[config.OCIUser, commands.Command]:
 
     oci_user = config.OCIUser()
     validate_config(oci_user.config)
-    logger.addHandler(logging.StreamHandler())
+
+    log_handler = logging.StreamHandler()
+    log_formatter = logging.Formatter(fmt='%(asctime)s [%(levelname)-8s] %(message)s', datefmt='%Y-%m-%dT%H:%M:%S%z')
+    log_handler.setFormatter(log_formatter)
+    logger.addHandler(log_handler)
 
     params = _cli()
     cmd = _parse_cmd(oci_user=oci_user, params=params)
