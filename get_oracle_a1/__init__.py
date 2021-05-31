@@ -33,9 +33,7 @@ def main():
 
 def increase(cmd: commands.IncreaseResource, oci_user: config.OCIUser) -> None:
     def get_instance():
-        _ins = usecases.find_target_instance(
-            oci_user=oci_user, display_name=cmd.display_name
-        )
+        _ins = usecases.find_target_instance(oci_user=oci_user, display_name=cmd.display_name)
         if _ins is None:
             # TODO: custom exception
             raise RuntimeError('Failed to fetch instance')
@@ -44,27 +42,18 @@ def increase(cmd: commands.IncreaseResource, oci_user: config.OCIUser) -> None:
     instance = get_instance()
     resource_limit = usecases.get_res_limit(oci_user, instance.availability_domain)
     while (
-        instance.shape_config.ocpus < resource_limit.ocpu
-        or instance.shape_config.memory_in_gbs < resource_limit.memory
+        instance.shape_config.ocpus < resource_limit.ocpu or instance.shape_config.memory_in_gbs < resource_limit.memory
     ):
         instance = get_instance()
-        step = usecases.calc_next_increase_step(
-            instance=instance, resource_limit=resource_limit
-        )
+        step = usecases.calc_next_increase_step(instance=instance, resource_limit=resource_limit)
         logger.info(f'New Increasing Step: {step}', extra=dict(step=step))
         succeed = False
         try_count = 0
         while not succeed:
             try:
-                usecases.increase_resource(
-                    oci_user=oci_user, instance=instance, step=step
-                )
+                usecases.increase_resource(oci_user=oci_user, instance=instance, step=step)
             except ServiceError as e:
-                if (
-                    e.status != 500
-                    or e.code != 'InternalError'
-                    or e.message != 'Out of host capacity.'
-                ):
+                if e.status != 500 or e.code != 'InternalError' or e.message != 'Out of host capacity.':
                     logger.exception('Unsupported exception happened')
                     break
             else:
@@ -75,9 +64,7 @@ def increase(cmd: commands.IncreaseResource, oci_user: config.OCIUser) -> None:
         if succeed:
             logging.info(f'Increasing succeed in {try_count} tries.')
         else:
-            logging.error(
-                f'Failed to increase after {try_count} tries. Retry after {RETRY_SEC} seconds'
-            )
+            logging.error(f'Failed to increase after {try_count} tries. Retry after {RETRY_SEC} seconds')
         sleep(RETRY_SEC)
 
 
@@ -110,23 +97,15 @@ def _cli() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def _parse_cmd(
-    oci_user: config.OCIUser, params: argparse.Namespace
-) -> commands.Command:
+def _parse_cmd(oci_user: config.OCIUser, params: argparse.Namespace) -> commands.Command:
     if params.cmd == 'increase':
-        instance = usecases.find_target_instance(
-            oci_user=oci_user, display_name=params.display_name
-        )
+        instance = usecases.find_target_instance(oci_user=oci_user, display_name=params.display_name)
         if instance is None:
             # TODO: custom exception
-            raise RuntimeError(
-                f'Failed to find target instance. display_name: {params.display_name}'
-            )
+            raise RuntimeError(f'Failed to find target instance. display_name: {params.display_name}')
 
         if params.target_ocpu is None or params.target_memory is None:
-            resource_limit = usecases.get_res_limit(
-                oci_user, instance.availability_domain
-            )
+            resource_limit = usecases.get_res_limit(oci_user, instance.availability_domain)
             params.target_ocpu = resource_limit.ocpu
             params.target_memory = resource_limit.memory
 

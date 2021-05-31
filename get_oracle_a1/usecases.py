@@ -49,9 +49,7 @@ def get_res_limit(oci_user: OCIUser, availability_domain: str) -> ResourceLimit:
     )
 
 
-def increase_resource(
-    oci_user: OCIUser, instance: Instance, step: IncreaseStep
-) -> None:
+def increase_resource(oci_user: OCIUser, instance: Instance, step: IncreaseStep) -> None:
     client = ComputeClient(config=oci_user.config)
     client.update_instance(
         instance_id=instance.id,
@@ -68,9 +66,7 @@ def check_a1_available(oci_user: OCIUser) -> bool:
     pass
 
 
-def calc_next_increase_step(
-    instance: Instance, resource_limit: ResourceLimit
-) -> IncreaseStep:
+def calc_next_increase_step(instance: Instance, resource_limit: ResourceLimit) -> IncreaseStep:
     base_ocpu_step = 1
     base_memory_step = resource_limit.memory // resource_limit.ocpu
 
@@ -83,9 +79,7 @@ def calc_next_increase_step(
     )
 
 
-def verify_instance_for_increasing(
-    instance: Instance, resource_limit: ResourceLimit
-) -> None:
+def verify_instance_for_increasing(instance: Instance, resource_limit: ResourceLimit) -> None:
     if instance.shape != 'VM.Standard.A1.Flex':
         # TODO: custom exception
         raise ValueError(f'{instance.shape} is not A1 Flex')
