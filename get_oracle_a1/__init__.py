@@ -9,6 +9,7 @@ from oci.exceptions import ServiceError
 from get_oracle_a1 import commands, config, usecases
 
 logger = logging.getLogger(__name__)
+RETRY_SEC = 120
 
 
 def main():
@@ -65,12 +66,19 @@ def increase(cmd: commands.IncreaseResource, oci_user: config.OCIUser) -> None:
                     or e.message != 'Out of host capacity.'
                 ):
                     logger.exception('Unsupported exception happened')
+                    break
             else:
                 succeed = True
             finally:
                 try_count += 1
-        logging.info(f'Increasing succeed in {try_count} tries')
-        sleep(30)
+
+        if succeed:
+            logging.info(f'Increasing succeed in {try_count} tries.')
+        else:
+            logging.error(
+                f'Failed to increase after {try_count} tries. Retry after {RETRY_SEC} seconds'
+            )
+        sleep(RETRY_SEC)
 
 
 def _cli() -> argparse.Namespace:
