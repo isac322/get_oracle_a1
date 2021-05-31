@@ -10,6 +10,7 @@ from get_oracle_a1 import commands, config, usecases
 
 logger = logging.getLogger(__name__)
 RETRY_SEC = 120
+LOG_TERM = 1_000_000_000
 
 
 def main():
@@ -47,6 +48,7 @@ def increase(cmd: commands.IncreaseResource, oci_user: config.OCIUser) -> None:
         instance = get_instance()
         step = usecases.calc_next_increase_step(instance=instance, resource_limit=resource_limit)
         logger.info(f'New Increasing Step: {step}', extra=dict(step=step))
+
         succeed = False
         try_count = 0
         while not succeed:
@@ -60,6 +62,9 @@ def increase(cmd: commands.IncreaseResource, oci_user: config.OCIUser) -> None:
                 succeed = True
             finally:
                 try_count += 1
+
+            if try_count % LOG_TERM:
+                logging.info(f'Tried {try_count}. Keep trying...')
 
         if succeed:
             logging.info(f'Increasing succeed in {try_count} tries.')
