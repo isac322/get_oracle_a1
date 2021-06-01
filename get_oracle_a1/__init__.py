@@ -64,12 +64,12 @@ def increase(cmd: commands.IncreaseResource, oci_user: config.OCIUser) -> None:
                 try_count += 1
 
             if try_count % LOG_TERM:
-                logging.info(f'Tried {try_count}. Keep trying...')
+                logger.info(f'Tried {try_count}. Keep trying...')
 
         if succeed:
-            logging.info(f'Increasing succeed in {try_count} tries.')
+            logger.info(f'Increasing succeed in {try_count} tries.')
         else:
-            logging.error(f'Failed to increase after {try_count} tries. Retry after {RETRY_SEC} seconds')
+            logger.error(f'Failed to increase after {try_count} tries. Retry after {RETRY_SEC} seconds')
         sleep(RETRY_SEC)
 
 
@@ -127,6 +127,8 @@ def _bootstrap() -> tuple[config.OCIUser, commands.Command]:
     oci_user = config.OCIUser()
     validate_config(oci_user.config)
 
+    for h in logger.handlers:
+        logger.removeHandler(h)
     log_handler = logging.StreamHandler()
     log_formatter = logging.Formatter(fmt='%(asctime)s [%(levelname)-8s] %(message)s', datefmt='%Y-%m-%dT%H:%M:%S%z')
     log_handler.setFormatter(log_formatter)
