@@ -63,7 +63,7 @@ def increase(cmd: commands.IncreaseResource, oci_user: config.OCIUser) -> None:
             finally:
                 try_count += 1
 
-            if try_count % LOG_TERM:
+            if try_count % LOG_TERM == 0:
                 logger.info(f'Tried {try_count}. Keep trying...')
 
         if succeed:
