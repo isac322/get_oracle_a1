@@ -68,8 +68,10 @@ def _parse_cmd(oci_user: config.OCIUser, params: argparse.Namespace) -> commands
 
         if params.target_ocpu is None or params.target_memory is None:
             resource_limit = helpers.get_res_limit(oci_user, instance.availability_domain)
-            params.target_ocpu = resource_limit.ocpu
-            params.target_memory = resource_limit.memory
+            if params.target_ocpu is None:
+                params.target_ocpu = resource_limit.ocpu
+            if params.target_memory is None:
+                params.target_memory = resource_limit.memory
 
         return commands.IncreaseResource.from_orm(params)
 
