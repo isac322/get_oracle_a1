@@ -1,4 +1,3 @@
-from oci.core.models import Instance
 from pydantic import BaseModel
 
 
@@ -9,6 +8,6 @@ class Command(BaseModel):
 
 
 class IncreaseResource(Command):
-    display_name: str
+    instance_ocid: str
     target_ocpu: int
     target_memory: int

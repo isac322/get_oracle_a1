@@ -1,23 +1,19 @@
 import argparse
 import logging
 import os
-from time import sleep
 
 from oci.config import validate_config
-from oci.exceptions import ServiceError
 
-from get_oracle_a1 import commands, config, usecases
+from get_oracle_a1 import commands, config, helpers, usecases
 
 logger = logging.getLogger(__name__)
-RETRY_SEC = 120
-LOG_TERM = 10_000
 
 
 def main():
     oci_user, cmd = _bootstrap()
 
     if isinstance(cmd, commands.IncreaseResource):
-        increase(cmd, oci_user)
+        usecases.increase(cmd, oci_user)
     else:
         # TODO: custom exception
         raise ValueError(f'Unknown command: {cmd}')
@@ -30,47 +26,6 @@ def main():
     #     if instance.lifecycle_state in (Instance.LIFECYCLE_STATE_TERMINATED, Instance.LIFECYCLE_STATE_TERMINATING):
     #         continue
     #     print(instance)
-
-
-def increase(cmd: commands.IncreaseResource, oci_user: config.OCIUser) -> None:
-    def get_instance():
-        _ins = usecases.find_target_instance(oci_user=oci_user, display_name=cmd.display_name)
-        if _ins is None:
-            # TODO: custom exception
-            raise RuntimeError('Failed to fetch instance')
-        return _ins
-
-    instance = get_instance()
-    resource_limit = usecases.get_res_limit(oci_user, instance.availability_domain)
-    while (
-        instance.shape_config.ocpus < resource_limit.ocpu or instance.shape_config.memory_in_gbs < resource_limit.memory
-    ):
-        instance = get_instance()
-        step = usecases.calc_next_increase_step(instance=instance, resource_limit=resource_limit)
-        logger.info(f'New Increasing Step: {step}', extra=dict(step=step))
-
-        succeed = False
-        try_count = 0
-        while not succeed:
-            try:
-                usecases.increase_resource(oci_user=oci_user, instance=instance, step=step)
-            except ServiceError as e:
-                if e.status != 500 or e.code != 'InternalError' or e.message != 'Out of host capacity.':
-                    logger.exception('Unsupported exception happened')
-                    break
-            else:
-                succeed = True
-            finally:
-                try_count += 1
-
-            if try_count % LOG_TERM == 0:
-                logger.info(f'Tried {try_count}. Keep trying...')
-
-        if succeed:
-            logger.info(f'Increasing succeed in {try_count} tries.')
-        else:
-            logger.error(f'Failed to increase after {try_count} tries. Retry after {RETRY_SEC} seconds')
-        sleep(RETRY_SEC)
 
 
 def _cli() -> argparse.Namespace:
@@ -104,13 +59,13 @@ def _cli() -> argparse.Namespace:
 
 def _parse_cmd(oci_user: config.OCIUser, params: argparse.Namespace) -> commands.Command:
     if params.cmd == 'increase':
-        instance = usecases.find_target_instance(oci_user=oci_user, display_name=params.display_name)
+        instance = helpers.find_target_instance(oci_user=oci_user, display_name=params.display_name)
         if instance is None:
             # TODO: custom exception
             raise RuntimeError(f'Failed to find target instance. display_name: {params.display_name}')
 
         if params.target_ocpu is None or params.target_memory is None:
-            resource_limit = usecases.get_res_limit(oci_user, instance.availability_domain)
+            resource_limit = helpers.get_res_limit(oci_user, instance.availability_domain)
             params.target_ocpu = resource_limit.ocpu
             params.target_memory = resource_limit.memory
 
