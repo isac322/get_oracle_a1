@@ -11,20 +11,17 @@ LOG_TERM = 10_000
 
 
 def increase(cmd: commands.IncreaseResource, oci_user: config.OCIUser) -> None:
-    def get_instance():
-        _ins = helpers.find_target_instance(oci_user=oci_user, display_name=cmd.display_name)
-        if _ins is None:
-            # TODO: custom exception
-            raise RuntimeError('Failed to fetch instance')
-        return _ins
+    while True:
+        instance = helpers.get_instance(oci_user=oci_user, ocid=cmd.instance_ocid)
+        if instance.shape_config.ocpus >= cmd.target_ocpu and instance.shape_config.memory_in_gbs >= cmd.target_memory:
+            break
 
-    instance = get_instance()
-    resource_limit = helpers.get_res_limit(oci_user, instance.availability_domain)
-    while (
-        instance.shape_config.ocpus < resource_limit.ocpu or instance.shape_config.memory_in_gbs < resource_limit.memory
-    ):
-        instance = get_instance()
-        step = helpers.calc_next_increase_step(instance=instance, resource_limit=resource_limit)
+        step = helpers.calc_next_increase_step(
+            oci_user=oci_user,
+            instance=instance,
+            target_ocpu=cmd.target_ocpu,
+            target_memory=cmd.target_memory,
+        )
         logger.info(f'New Increasing Step: {step}')
 
         succeed = False

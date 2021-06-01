@@ -64,6 +64,8 @@ def _parse_cmd(oci_user: config.OCIUser, params: argparse.Namespace) -> commands
             # TODO: custom exception
             raise RuntimeError(f'Failed to find target instance. display_name: {params.display_name}')
 
+        params.instance_ocid = instance.id
+
         if params.target_ocpu is None or params.target_memory is None:
             resource_limit = helpers.get_res_limit(oci_user, instance.availability_domain)
             params.target_ocpu = resource_limit.ocpu
