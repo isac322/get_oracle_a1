@@ -10,7 +10,7 @@ from get_oracle_a1 import commands, config, usecases
 
 logger = logging.getLogger(__name__)
 RETRY_SEC = 120
-LOG_TERM = 1_000_000_000
+LOG_TERM = 10_000
 
 
 def main():
