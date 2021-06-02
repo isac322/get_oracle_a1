@@ -1,4 +1,4 @@
-from functools import cached_property
+from functools import cache
 
 from pydantic import BaseSettings
 
@@ -13,9 +13,9 @@ class OCIUser(BaseSettings):
     class Config:
         env_prefix = 'oci_'
         frozen = True
-        keep_untouched = (cached_property,)
 
-    @cached_property
+    @property
+    @cache
     def config(self) -> dict[str, str]:
         return self.dict()
 

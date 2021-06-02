@@ -6,20 +6,32 @@ from oci.config import validate_config
 
 from get_oracle_a1 import commands, config, helpers, usecases
 
-logger = logging.getLogger(__name__)
-
 
 def main():
     oci_user, cmd = _bootstrap()
 
     if isinstance(cmd, commands.IncreaseResource):
         usecases.increase(cmd, oci_user)
+    elif isinstance(cmd, commands.CreateA1):
+        usecases.create(cmd, oci_user)
+    elif isinstance(cmd, commands.ListAvailabilityDomain):
+        usecases.list_availability_domain(cmd, oci_user)
+    elif isinstance(cmd, commands.ListAvailableSubnet):
+        usecases.list_available_subnet(cmd, oci_user)
     else:
         # TODO: custom exception
         raise ValueError(f'Unknown command: {cmd}')
 
+    # identity_client = VirtualNetworkClient(oci_user.config)
+    # for l in identity_client.list_subnets(oci_user.compartment_id).data:
+    #     print(l)
+    # identity_client = IdentityClient(oci_user.config)
+    # for l in identity_client.list_availability_domains(oci_user.compartment_id).data:
+    #     print(l)
     # compute_client = ComputeClient(config=oci_user.config)
     # for shape in compute_client.list_shapes(oci_user.compartment_id).data:
+    #     print(shape)
+    # for shape in compute_client.list_images(oci_user.compartment_id, shape=helpers.TARGET_SHAPE).data:
     #     print(shape)
     # instance: Instance
     # for instance in compute_client.list_instances(oci_user.compartment_id).data:
@@ -31,6 +43,9 @@ def main():
 def _cli() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     sub_cmd = parser.add_subparsers(title='Sub Command', dest='cmd', required=True)
+
+    _ = sub_cmd.add_parser('list_availability_domain')
+    _ = sub_cmd.add_parser('list_available_subnet')
 
     increase_cmd = sub_cmd.add_parser('increase')
     increase_cmd.add_argument(
@@ -54,6 +69,54 @@ def _cli() -> argparse.Namespace:
         type=int,
     )
 
+    create_cmd = sub_cmd.add_parser('create')
+    create_cmd.add_argument(
+        '-a',
+        '--availability-domain',
+        default=None,
+        type=str,
+        help='Availability Domain name. Run sub command `list_availability_domain` to get list',
+    )
+    create_cmd.add_argument(
+        '-n',
+        '--display-name',
+        required=True,
+        type=str,
+    )
+    create_cmd.add_argument(
+        '-c',
+        '--ocpu',
+        dest='target_ocpu',
+        default=None,
+        type=int,
+    )
+    create_cmd.add_argument(
+        '-m',
+        '--memory',
+        dest='target_memory',
+        default=None,
+        type=int,
+    )
+    create_cmd.add_argument(
+        '-s',
+        '--subnet-id',
+        default=None,
+        type=str,
+        help='Subnet OCID. Run sub command `list_available_subnet` to get list',
+    )
+    create_cmd.add_argument(
+        '-o',
+        '--os-name',
+        default='Oracle Linux',
+        type=str,
+    )
+    create_cmd.add_argument(
+        '-v',
+        '--os-version',
+        default=None,
+        type=str,
+    )
+
     return parser.parse_args()
 
 
@@ -67,7 +130,7 @@ def _parse_cmd(oci_user: config.OCIUser, params: argparse.Namespace) -> commands
         params.instance_ocid = instance.id
 
         if params.target_ocpu is None or params.target_memory is None:
-            resource_limit = helpers.get_res_limit(oci_user, instance.availability_domain)
+            resource_limit = helpers.get_a1_res_limit(oci_user, instance.availability_domain)
             if params.target_ocpu is None:
                 params.target_ocpu = resource_limit.ocpu
             if params.target_memory is None:
@@ -75,8 +138,49 @@ def _parse_cmd(oci_user: config.OCIUser, params: argparse.Namespace) -> commands
 
         return commands.IncreaseResource.from_orm(params)
 
+    elif params.cmd == 'create':
+        if params.availability_domain is None:
+            availability_domains = helpers.list_availability_domain(oci_user)
+            if len(availability_domains) == 0:
+                # TODO: custom exception
+                raise RuntimeError('Failed to find availability domain')
+            params.availability_domain = availability_domains[0].name
+
+        if params.subnet_id is None:
+            subnets = tuple(helpers.list_available_subnet(oci_user))
+            if len(subnets) == 0:
+                # TODO: custom exception
+                raise RuntimeError('Failed to find Subnet')
+            params.subnet_id = subnets[0].id
+
+        if params.target_ocpu is None or params.target_memory is None:
+            shape = helpers.find_target_shape(
+                oci_user=oci_user,
+                shape=helpers.TARGET_SHAPE,
+                availability_domain=params.availability_domain,
+            )
+            if shape is None:
+                raise ValueError(f'Does not support shape {helpers.TARGET_SHAPE}')
+            if params.target_ocpu is None:
+                params.target_ocpu = shape.ocpu_options.min
+            if params.target_memory is None:
+                params.target_memory = shape.memory_options.default_per_ocpu_in_g_bs
+
+        return commands.CreateA1.from_orm(params)
+
+    elif params.cmd == 'list_availability_domain':
+        return commands.ListAvailabilityDomain()
+
+    elif params.cmd == 'list_available_subnet':
+        return commands.ListAvailableSubnet()
+
+    else:
+        raise ValueError(f'Unknown command: {params.cmd}')
+
 
 def _bootstrap() -> tuple[config.OCIUser, commands.Command]:
+    logger = logging.getLogger(__name__)
+
     if os.getenv('DEBUG', False):
         from dotenv import load_dotenv
 

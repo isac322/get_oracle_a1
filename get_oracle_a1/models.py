@@ -10,8 +10,8 @@ class ResourceLimit(BaseModel):
 
 
 class IncreaseStep(BaseModel):
-    ocpu: int
-    memory: int
+    ocpu: float
+    memory: float
 
     class Config:
         allow_mutation = False
