@@ -26,6 +26,12 @@ def main():
 
 def _cli() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '--verbose',
+        help='increase output verbosity',
+        action='store_true',
+        default=False,
+    )
     sub_cmd = parser.add_subparsers(title='Sub Command', dest='cmd', required=True)
 
     _ = sub_cmd.add_parser('list_availability_domain')
@@ -195,5 +201,8 @@ def _bootstrap() -> tuple[config.OCIUser, commands.Command]:
 
     params = _cli()
     cmd = _parse_cmd(oci_user=oci_user, params=params)
+
+    if params.verbose:
+        logger.setLevel(logging.INFO)
 
     return oci_user, cmd
