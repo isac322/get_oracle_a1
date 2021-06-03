@@ -76,6 +76,8 @@ def create(cmd: commands.CreateA1, oci_user: config.OCIUser) -> None:
                 image=image,
                 display_name=cmd.display_name,
                 subnet_id=cmd.subnet_id,
+                boot_volume_size=cmd.boot_volume_size,
+                ssh_authorized_keys=cmd.ssh_authorized_keys,
             )
 
         except ServiceError as e:

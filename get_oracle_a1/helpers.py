@@ -1,5 +1,6 @@
 from collections import Iterable, Sequence
 from functools import cache
+from pathlib import Path
 from typing import Optional
 
 from oci.core import ComputeClient, VirtualNetworkClient
@@ -7,6 +8,7 @@ from oci.core.models import (
     CreateVnicDetails,
     Image,
     Instance,
+    InstanceSourceViaImageDetails,
     LaunchInstanceDetails,
     LaunchInstanceShapeConfigDetails,
     Shape,
@@ -162,6 +164,8 @@ def create_a1(
     image: Image,
     display_name: str,
     subnet_id: str,
+    boot_volume_size: Optional[float],
+    ssh_authorized_keys: Path,
 ) -> Instance:
     client = ComputeClient(config=oci_user.config)
     return client.launch_instance(
@@ -173,12 +177,23 @@ def create_a1(
                 ocpus=target_ocpu,
                 memory_in_gbs=target_memory,
             ),
-            image_id=image.id,
             availability_domain=availability_domain,
             create_vnic_details=CreateVnicDetails(
                 subnet_id=subnet_id,
+                hostname_label=display_name,
+            ),
+            source_details=InstanceSourceViaImageDetails(
+                image_id=image.id,
+                boot_volume_size_in_gbs=boot_volume_size,
+            ),
+            metadata=dict(
+                ssh_authorized_keys=ssh_authorized_keys.read_text(),
             ),
             is_pv_encryption_in_transit_enabled=True,
+            # launch_options=LaunchOptions(
+            #     boot_volume_type=LaunchOptions.BOOT_VOLUME_TYPE_ISCSI,
+            #     network_type=LaunchOptions.NETWORK_TYPE_VFIO,
+            # ),
         )
     ).data
 

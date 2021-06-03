@@ -1,6 +1,6 @@
 from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, FilePath
 
 
 class Command(BaseModel):
@@ -23,6 +23,8 @@ class CreateA1(Command):
     subnet_id: Optional[str]
     target_ocpu: Optional[int]
     target_memory: Optional[int]
+    boot_volume_size: Optional[float]
+    ssh_authorized_keys: FilePath
 
 
 class ListAvailabilityDomain(Command):

@@ -1,6 +1,7 @@
 import argparse
 import logging
 import os
+from pathlib import Path
 
 from oci.config import validate_config
 
@@ -21,23 +22,6 @@ def main():
     else:
         # TODO: custom exception
         raise ValueError(f'Unknown command: {cmd}')
-
-    # identity_client = VirtualNetworkClient(oci_user.config)
-    # for l in identity_client.list_subnets(oci_user.compartment_id).data:
-    #     print(l)
-    # identity_client = IdentityClient(oci_user.config)
-    # for l in identity_client.list_availability_domains(oci_user.compartment_id).data:
-    #     print(l)
-    # compute_client = ComputeClient(config=oci_user.config)
-    # for shape in compute_client.list_shapes(oci_user.compartment_id).data:
-    #     print(shape)
-    # for shape in compute_client.list_images(oci_user.compartment_id, shape=helpers.TARGET_SHAPE).data:
-    #     print(shape)
-    # instance: Instance
-    # for instance in compute_client.list_instances(oci_user.compartment_id).data:
-    #     if instance.lifecycle_state in (Instance.LIFECYCLE_STATE_TERMINATED, Instance.LIFECYCLE_STATE_TERMINATING):
-    #         continue
-    #     print(instance)
 
 
 def _cli() -> argparse.Namespace:
@@ -114,6 +98,18 @@ def _cli() -> argparse.Namespace:
         '-v',
         '--os-version',
         default=None,
+        type=str,
+    )
+    create_cmd.add_argument(
+        '-b',
+        '--boot-volume-size',
+        default=None,
+        type=float,
+        help='Gigabyte',
+    )
+    create_cmd.add_argument(
+        '--ssh-authorized-keys',
+        default=Path.home().joinpath('.ssh/authorized_keys'),
         type=str,
     )
 
