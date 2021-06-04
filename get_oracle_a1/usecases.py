@@ -7,6 +7,7 @@ from get_oracle_a1 import commands, config, helpers
 
 logger = logging.getLogger(__name__)
 RETRY_SEC = 120
+SUCCEED_DELAY = 300
 INCREASE_LOG_TERM = 10_000
 CREATE_LOG_TERM = 3_000
 INITIAL_DELAY = 1.0
@@ -48,9 +49,10 @@ def increase(cmd: commands.IncreaseResource, oci_user: config.OCIUser) -> None:
 
         if succeed:
             logger.info(f'Increasing succeed in {try_count} tries.')
+            sleep(SUCCEED_DELAY)
         else:
             logger.error(f'Failed to increase after {try_count} tries. Retry after {RETRY_SEC} seconds')
-        sleep(RETRY_SEC)
+            sleep(RETRY_SEC)
 
 
 def create(cmd: commands.CreateA1, oci_user: config.OCIUser) -> None:
