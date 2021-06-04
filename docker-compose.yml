@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   create:
-    restart: always
+    restart: on-failure
     volumes:
       - ~/.ssh/authorized_keys:/root/.ssh/authorized_keys:ro
     environment:
@@ -15,6 +15,7 @@ services:
       context: .
     image: get_oracle_a1
     command:
+      - --verbose
       - create
       - -n
       - sample
