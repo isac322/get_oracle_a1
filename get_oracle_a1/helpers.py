@@ -149,6 +149,7 @@ def get_image(oci_user: OCIUser, os_name: str, os_version: Optional[str]) -> Opt
             operating_system_version=os_version,
         ).data,
         key=lambda i: i.operating_system_version,
+        reverse=True,
     )
     if len(images) == 0:
         return None
