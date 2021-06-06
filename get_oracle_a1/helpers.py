@@ -32,7 +32,10 @@ def find_target_instance(oci_user: OCIUser, display_name: str) -> Optional[Insta
 
     instance: Instance
     for instance in list_query.data:
-        if instance.display_name == display_name:
+        if instance.display_name == display_name and instance.lifecycle_state not in (
+            Instance.LIFECYCLE_STATE_TERMINATING,
+            Instance.LIFECYCLE_STATE_TERMINATED,
+        ):
             return instance
 
     return None
