@@ -107,17 +107,22 @@ def find_target_shape(oci_user: OCIUser, shape: str, availability_domain: str) -
 
 
 def calc_next_increase_step(
-    oci_user: OCIUser, instance: Instance, target_ocpu: int, target_memory: int
+    oci_user: OCIUser, instance: Instance, target_ocpu: int, target_memory: int, incremental: bool
 ) -> IncreaseStep:
     shape = find_target_shape(oci_user=oci_user, shape=TARGET_SHAPE, availability_domain=instance.availability_domain)
     if shape is None:
         # TODO: custom exception
         raise RuntimeError(f'Failed to find shape {TARGET_SHAPE}')
 
+    resource_limit = get_a1_res_limit(oci_user, instance.availability_domain)
+
+    if not incremental:
+        return IncreaseStep(
+            ocpu=min(resource_limit.ocpu, target_ocpu), memory=min(resource_limit.memory, target_memory)
+        )
+
     base_ocpu_step = shape.ocpu_options.min
     base_memory_step = shape.memory_options.default_per_ocpu_in_g_bs * base_ocpu_step
-
-    resource_limit = get_a1_res_limit(oci_user, instance.availability_domain)
 
     return IncreaseStep(
         ocpu=min(instance.shape_config.ocpus + base_ocpu_step, resource_limit.ocpu, target_ocpu),

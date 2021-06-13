@@ -27,6 +27,7 @@ def increase(cmd: commands.IncreaseResource, oci_user: config.OCIUser) -> None:
             instance=instance,
             target_ocpu=cmd.target_ocpu,
             target_memory=cmd.target_memory,
+            incremental=cmd.incremental,
         )
         logger.info(f'New Increasing Step: {step}')
 

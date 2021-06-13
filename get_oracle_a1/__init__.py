@@ -58,6 +58,13 @@ def _cli() -> argparse.Namespace:
         default=None,
         type=int,
     )
+    increase_cmd.add_argument(
+        '-i',
+        '--incremental',
+        default=False,
+        action='store_true',
+        help='Acquire resources incrementally',
+    )
 
     create_cmd = sub_cmd.add_parser('create')
     create_cmd.add_argument(

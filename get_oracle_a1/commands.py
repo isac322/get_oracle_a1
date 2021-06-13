@@ -13,6 +13,7 @@ class IncreaseResource(Command):
     instance_ocid: str
     target_ocpu: int
     target_memory: int
+    incremental: bool
 
 
 class CreateA1(Command):
