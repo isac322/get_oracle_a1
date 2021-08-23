@@ -14,7 +14,6 @@ pydantic = "^1.8.2"
 [tool.poetry.dev-dependencies]
 black = "^21.7b0"
 flake8 = "^3.9.2"
-python-dotenv = "^0.19.0"
 
 [tool.poetry.scripts]
 get_oracle_a1 = 'get_oracle_a1:main'
