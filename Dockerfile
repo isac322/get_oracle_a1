@@ -1,9 +1,9 @@
-FROM python:3.9-alpine AS builder
+FROM python:3.9.6-alpine AS builder
 RUN wget -O - https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
 COPY . .
 RUN source $HOME/.poetry/env && poetry build -f wheel
 
-FROM python:3.9-alpine
+FROM python:3.9.6-alpine
 COPY --from=builder dist/*.whl ./
 RUN apk add --no-cache --virtual .build-deps \
     gcc \
