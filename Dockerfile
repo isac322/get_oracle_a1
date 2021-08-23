@@ -1,17 +1,16 @@
 FROM python:3.9.6-alpine AS builder
-RUN wget -O - https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
-COPY . .
-RUN source $HOME/.poetry/env && poetry build -f wheel
+
+RUN apk add --update --no-cache gcc musl-dev libffi-dev openssl-dev make cargo
+RUN pip install --no-cache-dir build
+COPY . /src
+RUN python -m build --wheel /src
+RUN pip wheel --no-cache-dir /src/dist/*.whl --wheel-dir /tmp/wheels
 
 FROM python:3.9.6-alpine
-COPY --from=builder dist/*.whl ./
-RUN apk add --no-cache --virtual .build-deps \
-    gcc \
-    libffi-dev \
-    musl-dev \
-    openssl-dev \
-    && apk add openssl \
-    && pip install --no-cache-dir *.whl \
-    && apk del .build-deps \
-    && rm -rf *.whl
-ENTRYPOINT ["python", "-m", "get_oracle_a1"]
+
+MAINTAINER 'Byeonghoon Isac Yoo <bh322yoo@gmail.com>'
+
+COPY --from=builder /tmp/wheels/* /tmp/wheels/
+RUN pip install /tmp/wheels/*.whl && rm -rf /tmp
+
+ENTRYPOINT ["/usr/local/bin/get_oracle_a1"]
