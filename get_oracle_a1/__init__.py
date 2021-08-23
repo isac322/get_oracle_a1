@@ -1,8 +1,8 @@
 import argparse
 import logging
-import os
 from pathlib import Path
 
+import oci
 from oci.config import validate_config
 
 from get_oracle_a1 import commands, config, helpers, usecases
@@ -26,18 +26,15 @@ def main():
 
 def _cli() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        '--verbose',
-        help='increase output verbosity',
-        action='store_true',
-        default=False,
-    )
     sub_cmd = parser.add_subparsers(title='Sub Command', dest='cmd', required=True)
 
-    _ = sub_cmd.add_parser('list_availability_domain')
-    _ = sub_cmd.add_parser('list_available_subnet')
+    list_ad = sub_cmd.add_parser('list_availability_domain')
+    _add_common_args(list_ad)
+    list_as = sub_cmd.add_parser('list_available_subnet')
+    _add_common_args(list_as)
 
     increase_cmd = sub_cmd.add_parser('increase')
+    _add_common_args(increase_cmd)
     increase_cmd.add_argument(
         '-n',
         '--display-name',
@@ -67,6 +64,7 @@ def _cli() -> argparse.Namespace:
     )
 
     create_cmd = sub_cmd.add_parser('create')
+    _add_common_args(create_cmd)
     create_cmd.add_argument(
         '-a',
         '--availability-domain',
@@ -127,6 +125,29 @@ def _cli() -> argparse.Namespace:
     )
 
     return parser.parse_args()
+
+
+def _add_common_args(parser: argparse.ArgumentParser) -> None:
+    parser.add_argument(
+        '-p',
+        '--profile',
+        default=oci.config.DEFAULT_PROFILE,
+        type=str,
+        help=f'OCI API profile. (Default: {oci.config.DEFAULT_PROFILE})',
+    )
+    parser.add_argument(
+        '-g',
+        '--api-config-file',
+        default=oci.config.DEFAULT_LOCATION,
+        type=Path,
+        help=f'OCI API config path. (Default: {oci.config.DEFAULT_LOCATION})',
+    )
+    parser.add_argument(
+        '--verbose',
+        help='increase output verbosity',
+        action='store_true',
+        default=False,
+    )
 
 
 def _parse_cmd(oci_user: config.OCIUser, params: argparse.Namespace) -> commands.Command:
@@ -190,15 +211,6 @@ def _parse_cmd(oci_user: config.OCIUser, params: argparse.Namespace) -> commands
 def _bootstrap() -> tuple[config.OCIUser, commands.Command]:
     logger = logging.getLogger(__name__)
 
-    if os.getenv('DEBUG', False):
-        from dotenv import load_dotenv
-
-        load_dotenv(override=True)
-        logger.setLevel(logging.DEBUG)
-
-    oci_user = config.OCIUser()
-    validate_config(oci_user.config)
-
     for h in logger.handlers:
         logger.removeHandler(h)
     log_handler = logging.StreamHandler()
@@ -207,6 +219,14 @@ def _bootstrap() -> tuple[config.OCIUser, commands.Command]:
     logger.addHandler(log_handler)
 
     params = _cli()
+
+    cfg = oci.config.from_file(
+        file_location=params.api_config_file,
+        profile_name=params.profile,
+    )
+    validate_config(cfg)
+    oci_user = config.OCIUser.parse_obj(cfg)
+    validate_config(oci_user.config)
     cmd = _parse_cmd(oci_user=oci_user, params=params)
 
     if params.verbose:

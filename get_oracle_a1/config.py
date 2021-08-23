@@ -1,17 +1,18 @@
 from functools import cache
+from typing import Optional
 
-from pydantic import BaseSettings
+from pydantic import BaseModel
 
 
-class OCIUser(BaseSettings):
+class OCIUser(BaseModel):
     user: str
-    key_content: str
+    key_content: Optional[str]
+    key_file: Optional[str]
     fingerprint: str
     tenancy: str
     region: str
 
     class Config:
-        env_prefix = 'oci_'
         frozen = True
 
     @property
