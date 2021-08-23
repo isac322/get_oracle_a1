@@ -5,17 +5,38 @@ services:
     restart: on-failure
     volumes:
       - ~/.ssh/authorized_keys:/root/.ssh/authorized_keys:ro
-    environment:
-      OCI_USER: sample
-      OCI_KEY_CONTENT: sample
-      OCI_FINGERPRINT: sample
-      OCI_TENANCY: sample
-      OCI_REGION: sample
+      - ~/.oci:/root/.oci:ro
     build:
       context: .
     image: get_oracle_a1
     command:
-      - --verbose
       - create
+      - --verbose
+      - -p
+      - profile_name
       - -n
-      - sample
+      - instance_name
+      - -c
+      - "2"
+      - -m
+      - "12"
+
+  increase:
+    restart: on-failure
+    volumes:
+      - ~/.ssh/authorized_keys:/root/.ssh/authorized_keys:ro
+      - ~/.oci:/root/.oci:ro
+    build:
+      context: .
+    image: get_oracle_a1
+    command:
+      - increase
+      - --verbose
+      - -p
+      - profile_name
+      - -n
+      - instance_name
+      - -c
+      - "4"
+      - -m
+      - "18"
