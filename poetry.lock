@@ -121,7 +121,7 @@ python-versions = "*"
 
 [[package]]
 name = "oci"
-version = "2.49.0"
+version = "2.49.1"
 description = "Oracle Cloud Infrastructure Python SDK"
 category = "main"
 optional = false
@@ -264,7 +264,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "23600498f0299299996951d44e8ced23614a8d8f705a33781d5520883b094bd2"
+content-hash = "2b617690d49852e07aa9ee95ad454fbbca891b6f31422eab53f1dc28200896ad"
 
 [metadata.files]
 black = [
@@ -362,8 +362,8 @@ mypy-extensions = [
     {file = "mypy_extensions-0.4.3.tar.gz", hash = "sha256:2d82818f5bb3e369420cb3c4060a7970edba416647068eb4c5343488a6c604a8"},
 ]
 oci = [
-    {file = "oci-2.49.0-py2.py3-none-any.whl", hash = "sha256:149395e11557dbb18230477cb5eddebf915fefa34a4e0486bd0f61f7984e2c14"},
-    {file = "oci-2.49.0.tar.gz", hash = "sha256:bee75dc0d7bf1f4bb065977815efd2a24e0ed4dfe3298a95c042b5d398e6f924"},
+    {file = "oci-2.49.1-py2.py3-none-any.whl", hash = "sha256:f2a83946ee6bde95f3714ec27ea7b999ffc1c9e0be0e8c59a8686af16eeab567"},
+    {file = "oci-2.49.1.tar.gz", hash = "sha256:f4c0ed94b43c55aff7d6ea900b0391b49d7513b0c4168e14d8dfd8b838c013fe"},
 ]
 pathspec = [
     {file = "pathspec-0.9.0-py2.py3-none-any.whl", hash = "sha256:7d15c4ddb0b5c802d161efc417ec1a2558ea2653c2e8ad9c19098201dc1c993a"},
