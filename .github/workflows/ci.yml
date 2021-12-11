@@ -61,8 +61,8 @@ jobs:
           platforms: ${{ env.PLATFORMS }}
           tags: ${{ steps.docker_meta.outputs.tags }}
           labels: ${{ steps.docker_meta.outputs.labels }}
-          cache-from: type=registry,ref=${{ env.DOCKERHUB_USERNAME }}/get_oracle_a1:latest
-          cache-to: type=inline
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
       - name: Update repo description
         if: github.event_name != 'pull_request'
         uses: peter-evans/dockerhub-description@v2
