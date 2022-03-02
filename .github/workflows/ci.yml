@@ -12,7 +12,7 @@ jobs:
     outputs:
       version: ${{ steps.app_version.outputs.version }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Get app version
         id: app_version
         run: |
@@ -28,7 +28,7 @@ jobs:
       PLATFORMS: linux/amd64,linux/arm64/v8  #,linux/arm/v7
       DOCKERHUB_USERNAME: isac322
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Docker meta
         id: docker_meta
         uses: crazy-max/ghaction-docker-meta@v3.6.2
