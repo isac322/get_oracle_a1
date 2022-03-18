@@ -1,4 +1,4 @@
-FROM python:3.10.2-alpine AS builder
+FROM python:3.10.3-alpine AS builder
 
 RUN apk add --update --no-cache gcc musl-dev libffi-dev openssl-dev make cargo
 RUN pip install --no-cache-dir build
@@ -6,7 +6,7 @@ COPY . /src
 RUN python -m build --wheel /src
 RUN pip wheel --no-cache-dir /src/dist/*.whl --wheel-dir /tmp/wheels
 
-FROM python:3.10.2-alpine
+FROM python:3.10.3-alpine
 
 MAINTAINER 'Byeonghoon Isac Yoo <bh322yoo@gmail.com>'
 
