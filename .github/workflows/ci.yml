@@ -64,7 +64,7 @@ jobs:
           cache-to: type=registry,ref=${{ env.DOCKERHUB_USERNAME }}/get_oracle_a1:_buildcache,mode=max
       - name: Update repo description
         if: github.event_name != 'pull_request'
-        uses: peter-evans/dockerhub-description@v2
+        uses: peter-evans/dockerhub-description@v3
         with:
           username: ${{ env.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
