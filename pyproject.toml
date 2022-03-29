@@ -12,7 +12,7 @@ oci = "^2.61.0"
 pydantic = "^1.9.0"
 
 [tool.poetry.dev-dependencies]
-black = "^22.1"
+black = "^22.3"
 flake8 = "^4.0.1"
 
 [tool.poetry.scripts]
