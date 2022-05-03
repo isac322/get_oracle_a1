@@ -1,7 +1,7 @@
 
 [tool.poetry]
 name = "get_oracle_a1"
-version = "0.2.0"
+version = "0.2.1"
 description = ""
 authors = ["Byeonghoon Yoo <bh322yoo@gmail.com>"]
 license = "MIT"
