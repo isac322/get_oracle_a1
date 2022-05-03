@@ -1,4 +1,4 @@
-from collections import Iterable, Sequence
+from collections.abc import Iterable, Sequence
 from functools import cache
 from pathlib import Path
 from typing import Optional
