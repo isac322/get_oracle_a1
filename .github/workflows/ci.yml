@@ -42,7 +42,7 @@ jobs:
             org.opencontainers.image.title=get_oracle_a1
       - name: Set up QEMU
         id: qemu
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v2
         with:
           platforms: ${{ env.PLATFORMS }}
       - name: Set up Docker Buildx
