@@ -13,7 +13,7 @@ pydantic = "^1.9.1"
 
 [tool.poetry.dev-dependencies]
 black = "^22.3"
-flake8 = "^5.0.1"
+flake8 = "^5.0.3"
 
 [tool.poetry.scripts]
 get_oracle_a1 = 'get_oracle_a1:main'
