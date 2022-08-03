@@ -1,4 +1,4 @@
-FROM python:3.10.4-alpine AS builder
+FROM python:3.11.0b5-alpine AS builder
 
 RUN apk add --update --no-cache gcc musl-dev libffi-dev openssl-dev make cargo
 RUN pip install --no-cache-dir build
@@ -8,7 +8,7 @@ RUN \
   --mount=type=cache,target=/root/.cache/pip \
     pip wheel /tmp/dist/*.whl --wheel-dir /wheel
 
-FROM python:3.10.4-alpine
+FROM python:3.11.0b5-alpine
 
 MAINTAINER 'Byeonghoon Isac Yoo <bh322yoo@gmail.com>'
 
