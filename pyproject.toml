@@ -8,7 +8,7 @@ license = "MIT"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-oci = "^2.67.0"
+oci = "^2.77.0"
 pydantic = "^1.9.1"
 
 [tool.poetry.dev-dependencies]
