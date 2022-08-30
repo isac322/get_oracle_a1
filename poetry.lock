@@ -79,11 +79,11 @@ cffi = ">=1.12"
 
 [package.extras]
 docs = ["sphinx (>=1.6.5,!=1.8.0,!=3.1.0,!=3.1.1)", "sphinx-rtd-theme"]
-docstest = ["doc8", "pyenchant (>=1.6.11)", "twine (>=1.12.0)", "sphinxcontrib-spelling (>=4.0.1)"]
+docstest = ["doc8", "pyenchant (>=1.6.11)", "sphinxcontrib-spelling (>=4.0.1)", "twine (>=1.12.0)"]
 pep8test = ["black", "flake8", "flake8-import-order", "pep8-naming"]
 sdist = ["setuptools-rust (>=0.11.4)"]
 ssh = ["bcrypt (>=3.1.5)"]
-test = ["pytest (>=6.0)", "pytest-cov", "pytest-subtests", "pytest-xdist", "pretend", "iso8601", "pytz", "hypothesis (>=1.11.4,!=3.79.2)"]
+test = ["hypothesis (>=1.11.4,!=3.79.2)", "iso8601", "pretend", "pytest (>=6.0)", "pytest-cov", "pytest-subtests", "pytest-xdist", "pytz"]
 
 [[package]]
 name = "flake8"
@@ -116,7 +116,7 @@ python-versions = "*"
 
 [[package]]
 name = "oci"
-version = "2.67.0"
+version = "2.80.1"
 description = "Oracle Cloud Infrastructure Python SDK"
 category = "main"
 optional = false
@@ -125,8 +125,8 @@ python-versions = "*"
 [package.dependencies]
 certifi = "*"
 circuitbreaker = ">=1.3.1,<2.0.0"
-cryptography = ">=3.2.1,<=3.4.7"
-pyOpenSSL = ">=17.5.0,<=19.1.0"
+cryptography = ">=3.2.1,<=37.0.2"
+pyOpenSSL = ">=17.5.0,<=22.0.0"
 python-dateutil = ">=2.5.3,<3.0.0"
 pytz = ">=2016.10"
 
@@ -147,8 +147,8 @@ optional = false
 python-versions = ">=3.6"
 
 [package.extras]
-test = ["pytest-mock (>=3.6)", "pytest-cov (>=2.7)", "pytest (>=6)", "appdirs (==1.4.4)"]
-docs = ["sphinx-autodoc-typehints (>=1.12)", "proselint (>=0.10.2)", "furo (>=2021.7.5b38)", "Sphinx (>=4)"]
+docs = ["Sphinx (>=4)", "furo (>=2021.7.5b38)", "proselint (>=0.10.2)", "sphinx-autodoc-typehints (>=1.12)"]
+test = ["appdirs (==1.4.4)", "pytest (>=6)", "pytest-cov (>=2.7)", "pytest-mock (>=3.6)"]
 
 [[package]]
 name = "pycodestyle"
@@ -251,7 +251,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "cfdf60d4528663f751db8a3bbeeb0002f2d2e5984fd97967e7489ee9716066c5"
+content-hash = "0e78fe8b8458523104d73cedc944c59b7c97ca5868ddf21a4a8ce92384dd3703"
 
 [metadata.files]
 black = [
@@ -370,8 +370,8 @@ mypy-extensions = [
     {file = "mypy_extensions-0.4.3.tar.gz", hash = "sha256:2d82818f5bb3e369420cb3c4060a7970edba416647068eb4c5343488a6c604a8"},
 ]
 oci = [
-    {file = "oci-2.67.0-py2.py3-none-any.whl", hash = "sha256:f16c3a0dc9cd816340a1f738cca0686896ec88861fc6f08eaff7849482d6ca9f"},
-    {file = "oci-2.67.0.tar.gz", hash = "sha256:a488c488d050c81427a5a777e1974dd98600a52b7ebf1e807ba7345dc5e1a61d"},
+    {file = "oci-2.80.1-py2.py3-none-any.whl", hash = "sha256:6cf46819120b86b068546b662a70ea053edbff371db208e4acfb5abb79aa3724"},
+    {file = "oci-2.80.1.tar.gz", hash = "sha256:149d58d463207714021cc36202487d9e1880fee9b159b3392bc8ebeb1876dde4"},
 ]
 pathspec = [
     {file = "pathspec-0.9.0-py2.py3-none-any.whl", hash = "sha256:7d15c4ddb0b5c802d161efc417ec1a2558ea2653c2e8ad9c19098201dc1c993a"},
