@@ -9,7 +9,7 @@ license = "MIT"
 [tool.poetry.dependencies]
 python = "^3.9"
 oci = "^2.67.0"
-pydantic = "^1.9.1"
+pydantic = "^1.10.5"
 
 [tool.poetry.dev-dependencies]
 black = "^22.6"
