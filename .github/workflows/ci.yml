@@ -31,7 +31,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: Docker meta
         id: docker_meta
-        uses: crazy-max/ghaction-docker-meta@v4.0.1
+        uses: crazy-max/ghaction-docker-meta@v4.4.0
         with:
           flavor: latest=true
           images: ${{ env.DOCKERHUB_USERNAME }}/get_oracle_a1
