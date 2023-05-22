@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.4
 
-FROM python:3.11.2-alpine AS builder
+FROM python:3.11.3-alpine AS builder
 SHELL ["/bin/ash", "-o", "pipefail", "-c"]
 ENV CC='ccache gcc'
 
@@ -14,7 +14,7 @@ RUN \
   --mount=type=cache,target=/root/.cache/ccache \
     pip wheel /tmp/dist/*.whl --wheel-dir /wheel
 
-FROM python:3.11.2-alpine
+FROM python:3.11.3-alpine
 
 MAINTAINER 'Byeonghoon Isac Yoo <bh322yoo@gmail.com>'
 
