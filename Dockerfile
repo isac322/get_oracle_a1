@@ -1,11 +1,17 @@
-FROM python:3.11.2-alpine AS builder
+# syntax=docker/dockerfile:1.4
 
-RUN apk add --update --no-cache gcc musl-dev libffi-dev openssl-dev make cargo
-RUN pip install --no-cache-dir build
+FROM python:3.11.2-alpine AS builder
+SHELL ["/bin/ash", "-o", "pipefail", "-c"]
+ENV CC='ccache gcc'
+
+RUN \
+    apk add --update --no-cache gcc ccache musl-dev libffi-dev \
+    && pip install --no-cache-dir build
 COPY . /src
 RUN python -m build --wheel -o /tmp/dist /src
 RUN \
   --mount=type=cache,target=/root/.cache/pip \
+  --mount=type=cache,target=/root/.cache/ccache \
     pip wheel /tmp/dist/*.whl --wheel-dir /wheel
 
 FROM python:3.11.2-alpine
