@@ -15,7 +15,7 @@ jobs:
         id: docker_meta
         uses: docker/metadata-action@v4
         with:
-          flavor: latest=false
+          flavor: latest=true
           images: ${{ env.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}
           tags: |
             type=semver,pattern={{version}}
