@@ -9,11 +9,7 @@ logger = logging.getLogger(__name__)
 RETRY_SEC = 120
 SUCCEED_DELAY = 300
 INCREASE_LOG_TERM = 10_000
-CREATE_LOG_TERM = 3_000
-INITIAL_DELAY = 1.0
-DELAY_BACKOFF_STEP = 1.0
-DELAY_ADVANCE_STEP = 0.2
-DELAY_ADVANCE_THRESHOLD = 10
+CREATE_LOG_TERM = 10
 
 
 def increase(cmd: commands.IncreaseResource, oci_user: config.OCIUser) -> None:
@@ -68,7 +64,6 @@ def create(cmd: commands.CreateA1, oci_user: config.OCIUser) -> None:
 
     try_count = 0
     count_after_last_rate_limited = 0
-    delay = INITIAL_DELAY
     while True:
         try:
             instance = helpers.create_a1(
@@ -85,9 +80,7 @@ def create(cmd: commands.CreateA1, oci_user: config.OCIUser) -> None:
 
         except ServiceError as e:
             if e.status == 429 and e.code == 'TooManyRequests' and e.message == 'Too many requests for the user':
-                logger.warning(f'Rate limited. Current delay: {delay:.2f}. backoff to {delay + DELAY_BACKOFF_STEP:.2f}')
-                delay += DELAY_BACKOFF_STEP
-                count_after_last_rate_limited = 0
+                pass
 
             elif not (e.status == 500 and e.code == 'InternalError' and e.message == 'Out of host capacity.'):
                 logger.exception(f'Failed to create instance with unknown reason. ({try_count} times tried)')
@@ -95,14 +88,8 @@ def create(cmd: commands.CreateA1, oci_user: config.OCIUser) -> None:
 
             else:
                 count_after_last_rate_limited += 1
-                if count_after_last_rate_limited % DELAY_ADVANCE_THRESHOLD == 0 and delay >= DELAY_ADVANCE_STEP:
-                    delay -= DELAY_ADVANCE_STEP
-                    logger.info(
-                        f'No rate limiting during {count_after_last_rate_limited} requests. '
-                        f'Advance delay to {delay:.2f}'
-                    )
 
-            sleep(delay)  # to prevent rate limited
+            sleep(3)  # to prevent rate limited
 
         else:
             logger.info(f'Succeed to create in {try_count} tries.')
@@ -113,7 +100,7 @@ def create(cmd: commands.CreateA1, oci_user: config.OCIUser) -> None:
             try_count += 1
 
         if try_count % CREATE_LOG_TERM == 0:
-            logger.info(f'Tried {try_count}. Keep trying...')
+            logger.info(f'Tried {try_count} times. Keep trying...')
 
 
 def list_availability_domain(_: commands.ListAvailabilityDomain, oci_user: config.OCIUser) -> None:
