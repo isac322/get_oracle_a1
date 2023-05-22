@@ -11,12 +11,14 @@ python = "^3.9"
 oci = "^2.67.0"
 pydantic = "^1.9.1"
 
-[tool.poetry.dev-dependencies]
-black = "^22.6"
-flake8 = "^5.0.4"
-
 [tool.poetry.scripts]
 get_oracle_a1 = 'get_oracle_a1:main'
+
+[tool.poetry.group.dev.dependencies]
+flake8-pyproject = "^1.2.3"
+black = "^23.3.0"
+flake8 = "^6.0.0"
+flake8-black = "^0.3.6"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -26,3 +28,11 @@ build-backend = "poetry.core.masonry.api"
 [tool.black]
 line-length = 120
 skip-string-normalization = true
+
+[tool.flake8]
+ignore = ['E203', 'W503']
+per-file-ignores = [
+    '__init__.py:F401',
+]
+max-line-length = 120
+count = true
