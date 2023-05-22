@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'poetry'
+      - name: Run image
+        uses: abatilo/actions-poetry@v2
+      - name: Lint
+        run: |
+          poetry install --no-root --sync
+          poetry run flake8 .
+
+  build:
+    runs-on: ubuntu-latest
+    env:
+      PLATFORMS: linux/amd64,linux/arm64/v8,linux/arm/v7
+      DOCKERHUB_USERNAME: isac322
+    steps:
+      - name: Set up QEMU
+        id: qemu
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: ${{ env.PLATFORMS }}
+
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Restore buildkit state
+        uses: isac322/buildkit-state@v1
+        with:
+          buildx-name: ${{ steps.buildx.outputs.name }}
+
+      - name: Build
+        uses: docker/build-push-action@v4
+        with:
+          push: false
+          platforms: ${{ env.PLATFORMS }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=min
