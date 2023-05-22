@@ -7,7 +7,8 @@ ENV CC='ccache gcc'
 RUN \
     apk add --update --no-cache gcc ccache musl-dev libffi-dev \
     && pip install --no-cache-dir build
-COPY . /src
+COPY poetry.lock pyproject.toml /src/
+COPY get_oracle_a1 /src/get_oracle_a1
 RUN python -m build --wheel -o /tmp/dist /src
 RUN \
   --mount=type=cache,target=/root/.cache/pip \
