@@ -4,7 +4,7 @@
 ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/isac322/get_oracle_a1/latest?logo=docker&style=flat-square)
 ![PyPI](https://img.shields.io/pypi/v/oci?label=oci&logo=python&style=flat-square)
 ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/isac322/get_oracle_a1/master?logo=github&style=flat-square)
-![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/isac322/get_oracle_a1/ci/master?logo=github&style=flat-square)
+![GitHub Workflow Status (branch)](https://img.shields.io/github/actions/workflow/status/isac322/get_oracle_a1/ci.yaml?branch=master&logo=github&style=flat-square)
 ![Dependabpt Status](https://flat.badgen.net/github/dependabot/isac322/get_oracle_a1?icon=github)
 
 Supported platform: `linux/amd64`, `linux/arm64/v8`, `linux/arm/v7`
