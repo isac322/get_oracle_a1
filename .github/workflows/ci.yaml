@@ -40,7 +40,7 @@ jobs:
         uses: docker/setup-buildx-action@v2
 
       - name: Restore buildkit state
-        uses: isac322/buildkit-state@v1
+        uses: isac322/buildkit-state@v2
         with:
           buildx-name: ${{ steps.buildx.outputs.name }}
 
