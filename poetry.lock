@@ -285,19 +285,19 @@ files = [
 
 [[package]]
 name = "oci"
-version = "2.103.0"
+version = "2.109.0"
 description = "Oracle Cloud Infrastructure Python SDK"
 optional = false
 python-versions = "*"
 files = [
-    {file = "oci-2.103.0-py3-none-any.whl", hash = "sha256:fbd91ba9fdfcc0c0cd989e981ea151cacf883c45e3951b38c677b2cb43dca7e5"},
-    {file = "oci-2.103.0.tar.gz", hash = "sha256:24d7ad7d1e29c96a44ee5856db42b8c0b73a4a428c887f794f94b79a412f5e30"},
+    {file = "oci-2.109.0-py3-none-any.whl", hash = "sha256:16733692923b42e4c53f2ece839ab77891517157b0e2d92f3e56204c5bdece21"},
+    {file = "oci-2.109.0.tar.gz", hash = "sha256:f44d3e5212dfc903bcca1dd0811379924709c1a2ada9341e6ca51b320ddac6e4"},
 ]
 
 [package.dependencies]
 certifi = "*"
 circuitbreaker = ">=1.3.1,<2.0.0"
-cryptography = ">=3.2.1,<40.0.0"
+cryptography = ">=3.2.1,<42.0.0"
 pyOpenSSL = ">=17.5.0,<24.0.0"
 python-dateutil = ">=2.5.3,<3.0.0"
 pytz = ">=2016.10"
@@ -492,4 +492,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "87824c62c77a567ed8f0b56a1f18344d2a27b55acc3d45e7f97d0f736b10d89b"
+content-hash = "60ff9f24259edd2b4b68d2c110bbeb12841bb282ee97663fb2e213bbd4d82d15"
