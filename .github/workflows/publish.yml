@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: Docker meta
         id: docker_meta
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         with:
           flavor: latest=true
           images: ${{ env.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}
