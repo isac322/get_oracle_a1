@@ -9,7 +9,7 @@ license = "MIT"
 [tool.poetry.dependencies]
 python = "^3.11"
 oci = "^2.103.0"
-pydantic = "^1.10.10"
+pydantic = "^2.5.0"
 
 [tool.poetry.scripts]
 get_oracle_a1 = 'get_oracle_a1:main'
