@@ -16,7 +16,7 @@ get_oracle_a1 = 'get_oracle_a1:main'
 
 [tool.poetry.group.dev.dependencies]
 flake8-pyproject = "^1.2.3"
-black = "^23.10.1"
+black = "^24.2.0"
 flake8 = "^6.1.0"
 flake8-black = "^0.3.6"
 
